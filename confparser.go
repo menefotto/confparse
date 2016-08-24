@@ -1,4 +1,4 @@
-package confparse2
+package confparse
 
 import "io"
 
