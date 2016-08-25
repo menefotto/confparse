@@ -1,9 +1,11 @@
 This is a small package the provides a ini style configuration parser. This is 
 what is allowed:
 
-- Comments, either with the "#" or ":" anything after it till newline is ignored
-- Sections like [default]
-- Key and values like "ip=192.168.10.1"
+- Comments start, either with the "#" or ":" anything after it, till newline is ignored
+- Sections are written like the following [default] and contain a map of key values,
+  anything between [] is a valid section.
+- Key and values are like "ip=192.168.10.1" ,the separator is "=" otherwise will
+  not be considered a key value.
 
 Empty line are ignored, whitespaces are ignored as well. It hasn't really been
 tested yet, it might have some bugs.
