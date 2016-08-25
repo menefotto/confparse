@@ -1,9 +1,10 @@
 package confparse
 
 import (
-	"bufio"
 	"bytes"
 	"io"
+	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -34,12 +35,18 @@ func NewItemType(tok Token, vals ...string) *itemType {
 }
 
 type Lexer struct {
-	lex   *bufio.Reader
+	lex   *bytes.Buffer
+	ori   *bytes.Buffer
 	runes []rune
 }
 
 func NewLexer(r io.Reader) *Lexer {
-	return &Lexer{lex: bufio.NewReader(r), runes: make([]rune, 0)}
+	buf, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil
+	}
+
+	return &Lexer{lex: bytes.NewBuffer(buf), ori: bytes.NewBuffer(buf), runes: make([]rune, 0)}
 }
 
 func (l *Lexer) Scan() *itemType {
@@ -172,6 +179,26 @@ func (l *Lexer) eatSection() *itemType {
 		}
 	}
 	return NewItemType(SECTION, strings.TrimSpace(buf.String()))
+
+}
+
+func (l *Lexer) findLine(word string) (int, error) {
+	regex, err := regexp.Compile(word)
+	if err != nil {
+		return -1, err
+	}
+
+	line := 0
+	for {
+		str, err := l.ori.ReadString('\n')
+		if err != nil {
+			return line, err
+		}
+		if ok := regex.Match([]byte(str)); ok {
+			return line, err
+		}
+		line++
+	}
 
 }
 

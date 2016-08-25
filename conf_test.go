@@ -1,7 +1,6 @@
 package confparse
 
 import (
-	"fmt"
 	"os"
 	"testing"
 )
@@ -13,18 +12,32 @@ func TestParser(t *testing.T) {
 		t.Error(err)
 	}
 
-	parser := NewParser(f)
-	for {
-		item := parser.Parse()
-		switch {
-		case item.Tok == EOF:
-			return
-		case item.Tok == KEY_VALUE:
-			fmt.Println("key value: ", item.Values[0], item.Values[1])
-		case item.Tok == COMMENT:
-			fmt.Println("comment: ", item.Values[0])
-		case item.Tok == SECTION:
-			fmt.Println("section: ", item.Values[0])
-		}
+	parser := NewIniParser(f)
+	parser.Parse()
+	val, err := parser.GetString("repos", "base")
+	if err != nil {
+		t.Error(err)
 	}
+	t.Logf("Value of key %s is: %s\n", "base", val)
+	num, err := parser.GetFloat("repos", "multi")
+	if err != nil {
+		t.Error("Error :", err)
+	} else {
+		t.Logf("Value of key %s is: %s\n", "base", num)
+	}
+
+}
+
+func TestLexer(t *testing.T) {
+	f, err := os.Open("sonic.conf")
+	defer f.Close()
+	if err != nil {
+		t.Error(err)
+	}
+	lexer := NewLexer(f)
+	num, err := lexer.findLine("multi")
+	if err != nil {
+		return
+	}
+	t.Log("Line number is: ", num)
 }
