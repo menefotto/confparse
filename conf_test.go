@@ -28,6 +28,12 @@ func TestParser(t *testing.T) {
 		t.Logf("Value of key %s is: %s\n", "base", num)
 	}
 
+	ip, err := parser.GetString("local", "ip")
+	if err != nil {
+		t.Error("Error :", err)
+	} else {
+		t.Logf("Value of key %s is: %s\n", "ip", ip)
+	}
 }
 
 func TestLexer(t *testing.T) {
