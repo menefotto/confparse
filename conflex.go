@@ -2,6 +2,7 @@ package confparse
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"regexp"
@@ -36,7 +37,7 @@ func NewItemType(tok Token, vals ...string) *itemType {
 
 type Lexer struct {
 	lex   *bytes.Buffer
-	ori   *bytes.Buffer
+	ori   []byte
 	runes []rune
 }
 
@@ -46,7 +47,7 @@ func NewLexer(r io.Reader) *Lexer {
 		return nil
 	}
 
-	return &Lexer{lex: bytes.NewBuffer(buf), ori: bytes.NewBuffer(buf), runes: make([]rune, 0)}
+	return &Lexer{lex: bytes.NewBuffer(buf), ori: buf, runes: make([]rune, 0)}
 }
 
 func (l *Lexer) Scan() *itemType {
@@ -179,10 +180,13 @@ func (l *Lexer) eatSection() *itemType {
 		}
 	}
 	return NewItemType(SECTION, strings.TrimSpace(buf.String()))
-
 }
 
 func (l *Lexer) findLine(word string) (int, error) {
+	copy := bytes.NewBuffer(l.ori)
+	if copy == nil {
+		return -1, fmt.Errorf("can't allocate slice\n")
+	}
 	regex, err := regexp.Compile(word)
 	if err != nil {
 		return -1, err
@@ -190,7 +194,7 @@ func (l *Lexer) findLine(word string) (int, error) {
 
 	line := 0
 	for {
-		str, err := l.ori.ReadString('\n')
+		str, err := copy.ReadString('\n')
 		if err != nil {
 			return line, err
 		}

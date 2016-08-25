@@ -22,12 +22,12 @@ func (e *ParserError) Error() string {
 }
 
 var (
-	KEY_NOT_FOUND error = fmt.Errorf("key not found\n")
-	SEC_NOT_FOUND error = fmt.Errorf("sec not found\n")
-	NOT_BOOL            = fmt.Errorf("Value is not a bool\n")
-	NOT_INT             = fmt.Errorf("Value is not an int\n")
-	NOT_FLOAT           = fmt.Errorf("Value is not a float\n")
-	NOT_STRING          = fmt.Errorf("Value is not a string\n")
+	KEY_NOT_FOUND error = fmt.Errorf("key not found ")
+	SEC_NOT_FOUND error = fmt.Errorf("sec not found ")
+	NOT_BOOL            = fmt.Errorf("Value is not a bool ")
+	NOT_INT             = fmt.Errorf("Value is not an int ")
+	NOT_FLOAT           = fmt.Errorf("Value is not a float ")
+	NOT_STRING          = fmt.Errorf("Value is not a string ")
 )
 
 type Parser struct {
@@ -88,14 +88,16 @@ func NewConfig() *Config {
 
 }
 
-func (c *Config) getValue(section, key string) (string, error) {
+func (c *Config) getValue(section, key string, i *IniParser) (string, error) {
 	sec, ok := c.C[section]
 	if !ok {
-		return "", SEC_NOT_FOUND
+		return "", NewParserError(SEC_NOT_FOUND.Error(), section, key,
+			i.errorLine(key))
 	}
 	val, ok := sec[key]
 	if !ok {
-		return "", KEY_NOT_FOUND
+		return "", NewParserError(KEY_NOT_FOUND.Error(), section, key,
+			i.errorLine(key))
 	}
 
 	return val, nil
@@ -131,9 +133,9 @@ func (i *IniParser) Parse() {
 }
 
 func (i *IniParser) GetBool(section, key string) (bool, error) {
-	value, er := i.c.getValue(section, key)
-	if er != nil {
-		return false, er
+	value, err := i.c.getValue(section, key, i)
+	if err != nil {
+		return false, err
 	}
 	b, err := strconv.ParseBool(value)
 	if err != nil {
@@ -145,7 +147,7 @@ func (i *IniParser) GetBool(section, key string) (bool, error) {
 }
 
 func (i *IniParser) GetInt(section, key string) (int64, error) {
-	value, err := i.c.getValue(section, key)
+	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return -1, err
 	}
@@ -159,7 +161,7 @@ func (i *IniParser) GetInt(section, key string) (int64, error) {
 }
 
 func (i *IniParser) GetFloat(section, key string) (float64, error) {
-	value, err := i.c.getValue(section, key)
+	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return -0.1, err
 	}
@@ -174,15 +176,21 @@ func (i *IniParser) GetFloat(section, key string) (float64, error) {
 }
 
 func (i *IniParser) GetString(section, key string) (string, error) {
-	value, err := i.c.getValue(section, key)
+	value, err := i.c.getValue(section, key, i)
 	if err != nil {
-		return " ", NewParserError(err.Error(), section, key, i.errorLine(key))
+		return " ", err
 	}
 	return value, nil
 }
 
 func (i *IniParser) errorLine(word string) int {
-	lineno, _ := i.p.s.findLine(word)
+	lineno, err := i.p.s.findLine(word)
+	if err == io.EOF {
+		return lineno
+	}
+	if err != nil {
+		return -1
+	}
 	return lineno
 
 }

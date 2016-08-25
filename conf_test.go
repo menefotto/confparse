@@ -16,9 +16,11 @@ func TestParser(t *testing.T) {
 	parser.Parse()
 	val, err := parser.GetString("repos", "base")
 	if err != nil {
-		t.Error(err)
+		t.Error("Error :", err)
+	} else {
+		t.Logf("Value of key %s is: %s\n", "base", val)
 	}
-	t.Logf("Value of key %s is: %s\n", "base", val)
+
 	num, err := parser.GetFloat("repos", "multi")
 	if err != nil {
 		t.Error("Error :", err)
