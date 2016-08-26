@@ -16,23 +16,30 @@ func TestParser(t *testing.T) {
 	parser.Parse()
 	val, err := parser.GetString("repos", "base")
 	if err != nil {
-		t.Error("Error :", err)
+		t.Log("Error :", err)
 	} else {
 		t.Logf("Value of key %s is: %s\n", "base", val)
 	}
 
 	num, err := parser.GetFloat("repos", "multi")
 	if err != nil {
-		t.Error("Error :", err)
+		t.Log("Error :", err)
 	} else {
 		t.Logf("Value of key %s is: %s\n", "base", num)
 	}
 
 	ip, err := parser.GetString("local", "ip")
 	if err != nil {
-		t.Error("Error :", err)
+		t.Log("Error :", err)
 	} else {
 		t.Logf("Value of key %s is: %s\n", "ip", ip)
+	}
+
+	pkgs, err := parser.GetSlice("local", "locked_pkgs")
+	if err != nil {
+		t.Log("Error :", err)
+	} else {
+		t.Logf("Values of key %-v is: %s\n", "locked pkgs", pkgs)
 	}
 }
 

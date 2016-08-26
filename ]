@@ -187,7 +187,7 @@ func (i *IniParser) GetString(section, key string) (string, error) {
 func (i *IniParser) GetSlice(section, key string) ([]string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
-		return []string{""}, NewParserError(err.Error(), section, key, i.errorLine(key))
+		return []string{""}, err
 	}
 
 	return strings.Split(value, ","), nil

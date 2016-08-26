@@ -223,7 +223,7 @@ func isComment(ch rune) bool {
 }
 
 func isValid(ch rune) bool {
-	return ch == '.' || ch == '@' || ch == '/'
+	return ch == '.' || ch == '@' || ch == '/' || ch == ','
 }
 
 func isValue(ch rune) bool {
