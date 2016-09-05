@@ -3,6 +3,7 @@ package confparse
 import (
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -108,6 +109,19 @@ func (c *Config) getValue(section, key string, i *IniParser) (string, error) {
 type IniParser struct {
 	p *Parser
 	c *Config
+}
+
+func NewParserFromFile(confname string) (*IniParser, error) {
+	f, err := os.Open(confname)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	p := NewIniParser(f)
+	p.Parse()
+
+	return p, nil
 }
 
 func NewIniParser(r io.Reader) *IniParser {
