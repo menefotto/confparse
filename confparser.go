@@ -1,35 +1,10 @@
 package confparse
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strconv"
 	"strings"
-)
-
-type ParserError struct {
-	l int
-	k string
-	s string
-	m string
-}
-
-func NewParserError(msg, sec, key string, line int) *ParserError {
-	return &ParserError{m: msg, s: sec, k: key, l: line}
-}
-
-func (e *ParserError) Error() string {
-	return fmt.Sprintf("%s : ,line=%d, section=%s, key=%s\n", e.m, e.l, e.s, e.k)
-}
-
-var (
-	KEY_NOT_FOUND error = fmt.Errorf("key not found ")
-	SEC_NOT_FOUND error = fmt.Errorf("sec not found ")
-	NOT_BOOL            = fmt.Errorf("Value is not a bool ")
-	NOT_INT             = fmt.Errorf("Value is not an int ")
-	NOT_FLOAT           = fmt.Errorf("Value is not a float ")
-	NOT_STRING          = fmt.Errorf("Value is not a string ")
 )
 
 type Parser struct {
@@ -41,7 +16,7 @@ type Parser struct {
 	}
 }
 
-func NewParser(r io.Reader) *Parser {
+func newParser(r io.Reader) *Parser {
 	return &Parser{s: NewLexer(r)}
 }
 
@@ -78,19 +53,19 @@ func (p *Parser) Parse() (item *itemType) {
 	return
 }
 
-type Config struct {
+type config struct {
 	C map[string]map[string]string
 }
 
-func NewConfig() *Config {
-	conf := &Config{C: make(map[string]map[string]string, 0)}
+func newConfig() *config {
+	conf := &config{C: make(map[string]map[string]string, 0)}
 	conf.C["default"] = make(map[string]string, 0)
 	conf.C["default"]["version"] = "0.1"
 	return conf
 
 }
 
-func (c *Config) getValue(section, key string, i *IniParser) (string, error) {
+func (c *config) getValue(section, key string, i *iniParser) (string, error) {
 	sec, ok := c.C[section]
 	if !ok {
 		return "", NewParserError(SEC_NOT_FOUND.Error(), section, key,
@@ -106,29 +81,29 @@ func (c *Config) getValue(section, key string, i *IniParser) (string, error) {
 
 }
 
-type IniParser struct {
+type iniParser struct {
 	p *Parser
-	c *Config
+	c *config
 }
 
-func NewParserFromFile(confname string) (*IniParser, error) {
+func NewParserFromFile(confname string) (*iniParser, error) {
 	f, err := os.Open(confname)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	p := NewIniParser(f)
+	p := NewParser(f)
 	p.Parse()
 
 	return p, nil
 }
 
-func NewIniParser(r io.Reader) *IniParser {
-	return &IniParser{p: NewParser(r), c: NewConfig()}
+func NewParser(r io.Reader) *iniParser {
+	return &iniParser{p: newParser(r), c: newConfig()}
 }
 
-func (i *IniParser) Parse() {
+func (i *iniParser) Parse() {
 	var lastsection string
 
 	for {
@@ -147,7 +122,7 @@ func (i *IniParser) Parse() {
 	}
 }
 
-func (i *IniParser) GetBool(section, key string) (bool, error) {
+func (i *iniParser) GetBool(section, key string) (bool, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return false, err
@@ -161,7 +136,7 @@ func (i *IniParser) GetBool(section, key string) (bool, error) {
 
 }
 
-func (i *IniParser) GetInt(section, key string) (int64, error) {
+func (i *iniParser) GetInt(section, key string) (int64, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return -1, err
@@ -175,7 +150,7 @@ func (i *IniParser) GetInt(section, key string) (int64, error) {
 
 }
 
-func (i *IniParser) GetFloat(section, key string) (float64, error) {
+func (i *iniParser) GetFloat(section, key string) (float64, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return -0.1, err
@@ -190,7 +165,7 @@ func (i *IniParser) GetFloat(section, key string) (float64, error) {
 
 }
 
-func (i *IniParser) GetString(section, key string) (string, error) {
+func (i *iniParser) GetString(section, key string) (string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return " ", err
@@ -198,7 +173,7 @@ func (i *IniParser) GetString(section, key string) (string, error) {
 	return value, nil
 }
 
-func (i *IniParser) GetSlice(section, key string) ([]string, error) {
+func (i *iniParser) GetSlice(section, key string) ([]string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return []string{""}, NewParserError(err.Error(), section, key, i.errorLine(key))
@@ -208,7 +183,7 @@ func (i *IniParser) GetSlice(section, key string) ([]string, error) {
 
 }
 
-func (i *IniParser) errorLine(word string) int {
+func (i *iniParser) errorLine(word string) int {
 	lineno, err := i.p.s.findLine(word)
 	if err == io.EOF {
 		return lineno

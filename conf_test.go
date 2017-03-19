@@ -12,7 +12,7 @@ func TestParser(t *testing.T) {
 		t.Error(err)
 	}
 
-	parser := NewIniParser(f)
+	parser := NewParser(f)
 	parser.Parse()
 	val, err := parser.GetString("repos", "base")
 	if err != nil {
