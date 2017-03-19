@@ -1,3 +1,5 @@
+# YACP 
+### Yet Another Configuration Parser
 This is a small package the provides a ini style configuration parser. This is 
 what is allowed:
 
@@ -8,9 +10,9 @@ what is allowed:
   not be considered a key value.
 - The Parser can handle bools, ints and floats (both 64bit), strings and string slices,
   as long as they are divided by columns.
-
-Empty line are ignored, whitespaces are ignored as well. It hasn't really been
+- Empty line are ignored, whitespaces are ignored as well. It hasn't really been
 tested yet, it might have some bugs.
 
-Suggestion: do not use this software in a production environment, it's not even
+#### Disclaimer
+This software in alpha quality, don't use it in a production environment, it's not even
 completed yet and hasn't really been tested.
