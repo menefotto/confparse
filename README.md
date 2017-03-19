@@ -1,6 +1,6 @@
 # YACP 
 
-[![GoDoc](https://godoc.org/github.com/spf13/viper?status.svg)](https://godoc.org/github.com/spf13/viper)
+[![GoDoc](https://godoc.org/github.com/wind85/confparse?status.svg)](https://godoc.org/github.com/wind85/confparse)
 [![Build Status](https://travis-ci.org/wind85/confparse.svg?branch=master)](https://travis-ci.org/wind85/confparse)
 [![Coverage Status](https://coveralls.io/repos/github/wind85/confparse/badge.svg?branch=master)](https://coveralls.io/github/wind85/confparse?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
