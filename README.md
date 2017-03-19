@@ -1,7 +1,8 @@
 # YACP 
 
-[![Build Status](https://travis-ci.org/wind85/confparse.svg?branch=master)](https://travis-ci.org/wind85/confparse)
 [![GoDoc](https://godoc.org/github.com/spf13/viper?status.svg)](https://godoc.org/github.com/spf13/viper)
+[![Build Status](https://travis-ci.org/wind85/confparse.svg?branch=master)](https://travis-ci.org/wind85/confparse)
+[![Coverage Status](https://coveralls.io/repos/github/wind85/confparse/badge.svg?branch=master)](https://coveralls.io/github/wind85/confparse?branch=master)
 ### Yet Another Configuration Parser
 This is a small package the provides a ini style configuration parser. This is 
 what is allowed:
