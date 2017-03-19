@@ -1,5 +1,6 @@
 # YACP 
-[![Build Status](https://travis-ci.org/spf13/viper.svg)](https://travis-ci.org/spf13/viper)
+
+[![Build Status](https://travis-ci.org/wind85/confparse.svg?branch=master)](https://travis-ci.org/wind85/confparse)
 [![GoDoc](https://godoc.org/github.com/spf13/viper?status.svg)](https://godoc.org/github.com/spf13/viper)
 ### Yet Another Configuration Parser
 This is a small package the provides a ini style configuration parser. This is 
