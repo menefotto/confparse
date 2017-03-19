@@ -56,3 +56,74 @@ func TestLexer(t *testing.T) {
 	}
 	t.Log("Line number is: ", num)
 }
+
+func TestFileParser(t *testing.T) {
+	_, err := NewParserFromFile("sonic.conf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = NewParserFromFile("nonexistant.conf")
+	if err == nil {
+		t.Fatal(err)
+	}
+
+}
+
+func TestGetIntBool(t *testing.T) {
+	ini, err := NewParserFromFile("sonic.conf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	n, err := ini.GetInt("local", "testint")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != 5 {
+		t.Fatal("Int should be 5!")
+	}
+
+	b, err := ini.GetBool("local", "testbool")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b != false {
+		t.Fatal("B should be false!")
+	}
+
+}
+
+func TestBreakGetIntBool(t *testing.T) {
+	ini, err := NewParserFromFile("sonic.conf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = ini.GetInt("local", "testbool")
+	if err == nil {
+		t.Fatal("Should be an error!")
+	}
+
+	_, err = ini.GetBool("local", "testint")
+	if err == nil {
+		t.Fatal("Should be an error!")
+	}
+
+}
+
+func TestBreakSliceFload(t *testing.T) {
+	ini, err := NewParserFromFile("sonic.conf")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = ini.GetSlice("local", "testslice")
+	if err == nil {
+		t.Fatal("Should be an error!")
+	}
+
+	_, err = ini.GetFloat("local", "testbool")
+	if err == nil {
+		t.Fatal("Should be an error!")
+	}
+}

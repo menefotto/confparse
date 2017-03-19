@@ -2,7 +2,6 @@ package confparse
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"regexp"
@@ -184,9 +183,7 @@ func (l *Lexer) eatSection() *itemType {
 
 func (l *Lexer) findLine(word string) (int, error) {
 	copy := bytes.NewBuffer(l.ori)
-	if copy == nil {
-		return -1, fmt.Errorf("can't allocate slice\n")
-	}
+
 	regex, err := regexp.Compile(word)
 	if err != nil {
 		return -1, err

@@ -168,7 +168,7 @@ func (i *iniParser) GetFloat(section, key string) (float64, error) {
 func (i *iniParser) GetString(section, key string) (string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
-		return " ", err
+		return "", err
 	}
 	return value, nil
 }
@@ -176,7 +176,7 @@ func (i *iniParser) GetString(section, key string) (string, error) {
 func (i *iniParser) GetSlice(section, key string) ([]string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
-		return []string{""}, NewParserError(err.Error(), section, key, i.errorLine(key))
+		return nil, NewParserError(err.Error(), section, key, i.errorLine(key))
 	}
 
 	return strings.Split(value, ","), nil
