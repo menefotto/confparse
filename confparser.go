@@ -86,20 +86,20 @@ type iniParser struct {
 	c *config
 }
 
-func NewParserFromFile(confname string) (*iniParser, error) {
+func NewFromFile(confname string) (*iniParser, error) {
 	f, err := os.Open(confname)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	p := NewParser(f)
+	p := New(f)
 	p.Parse()
 
 	return p, nil
 }
 
-func NewParser(r io.Reader) *iniParser {
+func New(r io.Reader) *iniParser {
 	return &iniParser{p: newParser(r), c: newConfig()}
 }
 

@@ -12,7 +12,7 @@ func TestParser(t *testing.T) {
 		t.Error(err)
 	}
 
-	parser := NewParser(f)
+	parser := New(f)
 	parser.Parse()
 	val, err := parser.GetString("repos", "base")
 	if err != nil {
@@ -58,12 +58,12 @@ func TestLexer(t *testing.T) {
 }
 
 func TestFileParser(t *testing.T) {
-	_, err := NewParserFromFile("sonic.conf")
+	_, err := NewFromFile("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = NewParserFromFile("nonexistant.conf")
+	_, err = NewFromFile("nonexistant.conf")
 	if err == nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestFileParser(t *testing.T) {
 }
 
 func TestGetIntBool(t *testing.T) {
-	ini, err := NewParserFromFile("sonic.conf")
+	ini, err := NewFromFile("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,7 +95,7 @@ func TestGetIntBool(t *testing.T) {
 }
 
 func TestBreakGetIntBool(t *testing.T) {
-	ini, err := NewParserFromFile("sonic.conf")
+	ini, err := NewFromFile("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,7 +113,7 @@ func TestBreakGetIntBool(t *testing.T) {
 }
 
 func TestBreakSliceFload(t *testing.T) {
-	ini, err := NewParserFromFile("sonic.conf")
+	ini, err := NewFromFile("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}

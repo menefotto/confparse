@@ -15,6 +15,27 @@ what is allowed:
 - Empty line are ignored, whitespaces are ignored as well. It hasn't really been
 tested yet, it might have some bugs.
 
+### How to use it
+Pretty simple, there are only two methods to create a new configuration either call 
+```
+  ini := confparse.New()
+  ini.Parse()
+```
+or
+```
+  ini, err := confparse.NewFromFile("config-name.whatever")
+```
+The second version does call Parse under the hood, and it isn't name sensible any valid name
+can be passed. Then any of the valid supported values can be retrived like so:
+```
+  value ,err := init.GetInt("sectionname","valuename")
+  value ,err := init.GetFloat("sectionname","valuename")
+  value ,err := init.GetSlice("sectionname","valuename")
+  value ,err := init.GetString("sectionname","valuename")
+  value ,err := init.GetBool("sectionname","valuename")
+```
+And that's pretty much it.
+
 #### Disclaimer
 This software in alpha quality, don't use it in a production environment, it's not even
 completed yet and hasn't really been tested.
