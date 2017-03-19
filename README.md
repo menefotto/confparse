@@ -12,7 +12,7 @@ what is allowed:
   not be considered a key value.
 - The Parser can handle bools, ints and floats (both 64bit), strings and string slices,
   as long as they are divided by columns.
-- Empty line are ignored, whitespaces are ignored as well. It hasn't really been
+- Empty line are ignored, white spaces are ignored as well. It hasn't really been
 tested yet, it might have some bugs.
 
 ### How to use it
@@ -26,7 +26,7 @@ or
   ini, err := confparse.NewFromFile("config-name.whatever")
 ```
 The second version does call Parse under the hood, and it isn't name sensible any valid name
-can be passed. Then any of the valid supported values can be retrived like so:
+can be passed. Then any of the valid supported values can be retrieved like so:
 ```
   value ,err := init.GetInt("sectionname","valuename")
   value ,err := init.GetFloat("sectionname","valuename")
