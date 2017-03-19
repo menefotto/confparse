@@ -29,8 +29,8 @@ func NewFromFile(confname string) (*iniParser, error) {
 }
 
 // New creates a new parser from an io.Reader and returns a valid ini parser
-// note that the object isn't hasn't yet parsed the configuration Parse has
-// to be explicitly called
+// note that the object hasn't yet parsed the configuration Parse, has to be
+// explicitly called.
 func New(r io.Reader) *iniParser {
 	return &iniParser{p: newParser(r), c: newConfig()}
 }
@@ -66,7 +66,7 @@ func (i *iniParser) GetBool(section, key string) (bool, error) {
 	}
 	b, err := strconv.ParseBool(value)
 	if err != nil {
-		return false, NewParserError(err.Error(), section, key, i.errorLine(key))
+		return false, newParserError(err.Error(), section, key, i.errorLine(key))
 	}
 
 	return b, nil
@@ -82,7 +82,7 @@ func (i *iniParser) GetInt(section, key string) (int64, error) {
 	}
 	n, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
-		return -1, NewParserError(err.Error(), section, key, i.errorLine(key))
+		return -1, newParserError(err.Error(), section, key, i.errorLine(key))
 	}
 
 	return n, nil
@@ -98,7 +98,7 @@ func (i *iniParser) GetFloat(section, key string) (float64, error) {
 	}
 	f, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		return -1, NewParserError(err.Error(), section, key, i.errorLine(key))
+		return -1, newParserError(err.Error(), section, key, i.errorLine(key))
 
 	}
 
@@ -121,7 +121,7 @@ func (i *iniParser) GetString(section, key string) (string, error) {
 func (i *iniParser) GetSlice(section, key string) ([]string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
-		return nil, NewParserError(err.Error(), section, key, i.errorLine(key))
+		return nil, newParserError(err.Error(), section, key, i.errorLine(key))
 	}
 
 	return strings.Split(value, ","), nil
@@ -141,16 +141,16 @@ func (i *iniParser) errorLine(word string) int {
 }
 
 type parser struct {
-	s   *Lexer
+	s   *lexer
 	buf struct {
-		tok    Token
+		tok    token
 		values []string
 		n      int
 	}
 }
 
 func newParser(r io.Reader) *parser {
-	return &parser{s: NewLexer(r)}
+	return &parser{s: newLexer(r)}
 }
 
 func (p *parser) scan() (item *itemType) {
@@ -202,12 +202,12 @@ func newConfig() *config {
 func (c *config) getValue(section, key string, i *iniParser) (string, error) {
 	sec, ok := c.C[section]
 	if !ok {
-		return "", NewParserError(SEC_NOT_FOUND.Error(), section, key,
+		return "", newParserError(SEC_NOT_FOUND.Error(), section, key,
 			i.errorLine(key))
 	}
 	val, ok := sec[key]
 	if !ok {
-		return "", NewParserError(KEY_NOT_FOUND.Error(), section, key,
+		return "", newParserError(KEY_NOT_FOUND.Error(), section, key,
 			i.errorLine(key))
 	}
 

@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-type Token int
+type token int
 
 const (
-	EOF Token = iota
+	EOF token = iota
 	KEY_VALUE
 	SECTION
 	WHITESPACE
@@ -22,11 +22,11 @@ const (
 const eof = rune(0)
 
 type itemType struct {
-	Tok    Token
+	Tok    token
 	Values []string
 }
 
-func NewItemType(tok Token, vals ...string) *itemType {
+func newItemType(tok token, vals ...string) *itemType {
 	item := &itemType{Values: make([]string, 0), Tok: tok}
 	for _, val := range vals {
 		item.Values = append(item.Values, val)
@@ -34,22 +34,22 @@ func NewItemType(tok Token, vals ...string) *itemType {
 	return item
 }
 
-type Lexer struct {
+type lexer struct {
 	lex   *bytes.Buffer
 	ori   []byte
 	runes []rune
 }
 
-func NewLexer(r io.Reader) *Lexer {
+func newLexer(r io.Reader) *lexer {
 	buf, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil
 	}
 
-	return &Lexer{lex: bytes.NewBuffer(buf), ori: buf, runes: make([]rune, 0)}
+	return &lexer{lex: bytes.NewBuffer(buf), ori: buf, runes: make([]rune, 0)}
 }
 
-func (l *Lexer) Scan() *itemType {
+func (l *lexer) Scan() *itemType {
 	ch := l.read()
 	l.runes = append(l.runes, ch)
 
@@ -67,13 +67,13 @@ func (l *Lexer) Scan() *itemType {
 	}
 
 	if ch == eof {
-		return NewItemType(EOF, "")
+		return newItemType(EOF, "")
 	}
 
-	return NewItemType(NON_VALID, string(ch))
+	return newItemType(NON_VALID, string(ch))
 }
 
-func (l *Lexer) read() rune {
+func (l *lexer) read() rune {
 	ch, _, err := l.lex.ReadRune()
 	if err != nil {
 		return eof
@@ -81,9 +81,9 @@ func (l *Lexer) read() rune {
 	return ch
 }
 
-func (l *Lexer) unread() { l.lex.UnreadRune() }
+func (l *lexer) unread() { l.lex.UnreadRune() }
 
-func (l *Lexer) eatWspace() *itemType {
+func (l *lexer) eatWspace() *itemType {
 
 	var buf bytes.Buffer
 	buf.WriteRune(l.read())
@@ -101,10 +101,10 @@ func (l *Lexer) eatWspace() *itemType {
 		}
 	}
 
-	return NewItemType(WHITESPACE, buf.String())
+	return newItemType(WHITESPACE, buf.String())
 }
 
-func (l *Lexer) eatKeyValue() *itemType {
+func (l *lexer) eatKeyValue() *itemType {
 	var value bytes.Buffer
 	value.WriteRune(l.read())
 
@@ -141,12 +141,12 @@ func (l *Lexer) eatKeyValue() *itemType {
 		key = string(l.runes[index:])
 	}
 
-	return NewItemType(KEY_VALUE,
+	return newItemType(KEY_VALUE,
 		strings.TrimSpace(strings.Trim(key, "=")),
 		strings.TrimSpace(value.String()))
 }
 
-func (l *Lexer) eatComment() *itemType {
+func (l *lexer) eatComment() *itemType {
 	var buf bytes.Buffer
 	buf.WriteRune(l.read())
 
@@ -159,10 +159,10 @@ func (l *Lexer) eatComment() *itemType {
 		}
 	}
 
-	return NewItemType(COMMENT, strings.TrimSpace(buf.String()))
+	return newItemType(COMMENT, strings.TrimSpace(buf.String()))
 }
 
-func (l *Lexer) eatSection() *itemType {
+func (l *lexer) eatSection() *itemType {
 	var buf bytes.Buffer
 	buf.WriteRune(l.read())
 
@@ -178,10 +178,10 @@ func (l *Lexer) eatSection() *itemType {
 			buf.WriteRune(ch)
 		}
 	}
-	return NewItemType(SECTION, strings.TrimSpace(buf.String()))
+	return newItemType(SECTION, strings.TrimSpace(buf.String()))
 }
 
-func (l *Lexer) findLine(word string) (int, error) {
+func (l *lexer) findLine(word string) (int, error) {
 	copy := bytes.NewBuffer(l.ori)
 
 	regex, err := regexp.Compile(word)

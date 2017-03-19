@@ -49,7 +49,7 @@ func TestLexer(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	lexer := NewLexer(f)
+	lexer := newLexer(f)
 	num, err := lexer.findLine("multi")
 	if err != nil {
 		return

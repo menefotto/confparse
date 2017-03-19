@@ -2,18 +2,18 @@ package confparse
 
 import "fmt"
 
-type ParserError struct {
+type parserError struct {
 	l int
 	k string
 	s string
 	m string
 }
 
-func NewParserError(msg, sec, key string, line int) *ParserError {
-	return &ParserError{m: msg, s: sec, k: key, l: line}
+func newParserError(msg, sec, key string, line int) *parserError {
+	return &parserError{m: msg, s: sec, k: key, l: line}
 }
 
-func (e *ParserError) Error() string {
+func (e *parserError) Error() string {
 	return fmt.Sprintf("%s : ,line=%d, section=%s, key=%s\n", e.m, e.l, e.s, e.k)
 }
 
