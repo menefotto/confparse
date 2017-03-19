@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type iniParser struct {
+type IniParser struct {
 	p *parser
 	c *config
 }
@@ -15,7 +15,7 @@ type iniParser struct {
 // NewFromFile creates and parse a new configuration from a file name
 // returns a valid parsed object and a nil, or an error and nil object
 // in the successful case the values are ready to be retrieved
-func NewFromFile(confname string) (*iniParser, error) {
+func NewFromFile(confname string) (*IniParser, error) {
 	f, err := os.Open(confname)
 	if err != nil {
 		return nil, err
@@ -31,14 +31,14 @@ func NewFromFile(confname string) (*iniParser, error) {
 // New creates a new parser from an io.Reader and returns a valid ini parser
 // note that the object hasn't yet parsed the configuration Parse, has to be
 // explicitly called.
-func New(r io.Reader) *iniParser {
-	return &iniParser{p: newParser(r), c: newConfig()}
+func New(r io.Reader) *IniParser {
+	return &IniParser{p: newParser(r), c: newConfig()}
 }
 
 // Parse actually parses the object content, note the object is always in a
 // valid state, must be called if the Parser has been created with New, in
 // case it has been created with NewFromFile it has already been parsed.
-func (i *iniParser) Parse() {
+func (i *IniParser) Parse() {
 	var lastsection string
 
 	for {
@@ -59,7 +59,7 @@ func (i *iniParser) Parse() {
 
 // GetBool retrieves a bool value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *iniParser) GetBool(section, key string) (bool, error) {
+func (i *IniParser) GetBool(section, key string) (bool, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return false, err
@@ -75,7 +75,7 @@ func (i *iniParser) GetBool(section, key string) (bool, error) {
 
 // GetInt retrieves a int64 value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *iniParser) GetInt(section, key string) (int64, error) {
+func (i *IniParser) GetInt(section, key string) (int64, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return -1, err
@@ -91,7 +91,7 @@ func (i *iniParser) GetInt(section, key string) (int64, error) {
 
 // GetFloat retrieves a float64 value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *iniParser) GetFloat(section, key string) (float64, error) {
+func (i *IniParser) GetFloat(section, key string) (float64, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return -0.1, err
@@ -108,7 +108,7 @@ func (i *iniParser) GetFloat(section, key string) (float64, error) {
 
 // GetString retrieves a string value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *iniParser) GetString(section, key string) (string, error) {
+func (i *IniParser) GetString(section, key string) (string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return "", err
@@ -118,7 +118,7 @@ func (i *iniParser) GetString(section, key string) (string, error) {
 
 // GetSlice retrieves a slice value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *iniParser) GetSlice(section, key string) ([]string, error) {
+func (i *IniParser) GetSlice(section, key string) ([]string, error) {
 	value, err := i.c.getValue(section, key, i)
 	if err != nil {
 		return nil, newParserError(err.Error(), section, key, i.errorLine(key))
@@ -128,7 +128,7 @@ func (i *iniParser) GetSlice(section, key string) ([]string, error) {
 
 }
 
-func (i *iniParser) errorLine(word string) int {
+func (i *IniParser) errorLine(word string) int {
 	lineno, err := i.p.s.findLine(word)
 	if err == io.EOF {
 		return lineno
@@ -199,7 +199,7 @@ func newConfig() *config {
 
 }
 
-func (c *config) getValue(section, key string, i *iniParser) (string, error) {
+func (c *config) getValue(section, key string, i *IniParser) (string, error) {
 	sec, ok := c.C[section]
 	if !ok {
 		return "", newParserError(SEC_NOT_FOUND.Error(), section, key,
