@@ -11,28 +11,28 @@ func TestParser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	val, err := parser.GetString("repos", "base")
+	val, err := parser.GetString("repos.base")
 	if err != nil {
 		t.Log("Error :", err)
 	} else {
 		t.Logf("Value of key %s is: %s\n", "base", val)
 	}
 
-	num, err := parser.GetFloat("repos", "multi")
+	num, err := parser.GetFloat("repos.multi")
 	if err != nil {
 		t.Log("Error :", err)
 	} else {
 		t.Logf("Value of key %s is: %s\n", "base", num)
 	}
 
-	ip, err := parser.GetString("local", "ip")
+	ip, err := parser.GetString("local.ip")
 	if err != nil {
 		t.Log("Error :", err)
 	} else {
 		t.Logf("Value of key %s is: %s\n", "ip", ip)
 	}
 
-	pkgs, err := parser.GetSlice("local", "locked_pkgs")
+	pkgs, err := parser.GetSlice("local.locked_pkgs")
 	if err != nil {
 		t.Log("Error :", err)
 	} else {
@@ -73,7 +73,7 @@ func TestGetIntBool(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	n, err := ini.GetInt("local", "testint")
+	n, err := ini.GetInt("local.testint")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +81,7 @@ func TestGetIntBool(t *testing.T) {
 		t.Fatal("Int should be 5!")
 	}
 
-	b, err := ini.GetBool("local", "testbool")
+	b, err := ini.GetBool("local.testbool")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,12 +97,12 @@ func TestBreakGetIntBool(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = ini.GetInt("local", "testbool")
+	_, err = ini.GetInt("local.testbool")
 	if err == nil {
 		t.Fatal("Should be an error!")
 	}
 
-	_, err = ini.GetBool("local", "testint")
+	_, err = ini.GetBool("local.testint")
 	if err == nil {
 		t.Fatal("Should be an error!")
 	}
@@ -114,12 +114,12 @@ func TestBreakSliceFload(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = ini.GetSlice("local", "testslice")
+	_, err = ini.GetSlice("local.testslice")
 	if err == nil {
 		t.Fatal("Should be an error!")
 	}
 
-	_, err = ini.GetFloat("local", "testbool")
+	_, err = ini.GetFloat("local.testbool")
 	if err == nil {
 		t.Fatal("Should be an error!")
 	}

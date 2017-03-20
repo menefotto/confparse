@@ -117,14 +117,15 @@ func (i *IniParser) eventFilter(file string) {
 
 // GetBool retrieves a bool value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *IniParser) GetBool(section, key string) (bool, error) {
-	value, err := i.c.getValue(section, key, i)
+func (i *IniParser) GetBool(sectionKey string) (bool, error) {
+	keys := strings.Split(sectionKey, ".")
+	value, err := i.c.getValue(keys[0], keys[1], i)
 	if err != nil {
 		return false, err
 	}
 	b, err := strconv.ParseBool(value)
 	if err != nil {
-		return false, newParserError(err.Error(), section, key, i.errorLine(key))
+		return false, newParserError(err.Error(), keys[0], keys[1], i.errorLine(keys[1]))
 	}
 
 	return b, nil
@@ -133,14 +134,15 @@ func (i *IniParser) GetBool(section, key string) (bool, error) {
 
 // GetInt retrieves a int64 value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *IniParser) GetInt(section, key string) (int64, error) {
-	value, err := i.c.getValue(section, key, i)
+func (i *IniParser) GetInt(sectionKey string) (int64, error) {
+	keys := strings.Split(sectionKey, ".")
+	value, err := i.c.getValue(keys[0], keys[1], i)
 	if err != nil {
 		return -1, err
 	}
 	n, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
-		return -1, newParserError(err.Error(), section, key, i.errorLine(key))
+		return -1, newParserError(err.Error(), keys[0], keys[1], i.errorLine(keys[1]))
 	}
 
 	return n, nil
@@ -149,14 +151,15 @@ func (i *IniParser) GetInt(section, key string) (int64, error) {
 
 // GetFloat retrieves a float64 value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *IniParser) GetFloat(section, key string) (float64, error) {
-	value, err := i.c.getValue(section, key, i)
+func (i *IniParser) GetFloat(sectionKey string) (float64, error) {
+	keys := strings.Split(sectionKey, ".")
+	value, err := i.c.getValue(keys[0], keys[1], i)
 	if err != nil {
 		return -0.1, err
 	}
 	f, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		return -1, newParserError(err.Error(), section, key, i.errorLine(key))
+		return -1, newParserError(err.Error(), keys[0], keys[1], i.errorLine(keys[1]))
 
 	}
 
@@ -166,8 +169,9 @@ func (i *IniParser) GetFloat(section, key string) (float64, error) {
 
 // GetString retrieves a string value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *IniParser) GetString(section, key string) (string, error) {
-	value, err := i.c.getValue(section, key, i)
+func (i *IniParser) GetString(sectionKey string) (string, error) {
+	keys := strings.Split(sectionKey, ".")
+	value, err := i.c.getValue(keys[0], keys[1], i)
 	if err != nil {
 		return "", err
 	}
@@ -176,10 +180,11 @@ func (i *IniParser) GetString(section, key string) (string, error) {
 
 // GetSlice retrieves a slice value from named section with key name, returns
 // either an error and an invalid value or a nil and a valid value.
-func (i *IniParser) GetSlice(section, key string) ([]string, error) {
-	value, err := i.c.getValue(section, key, i)
+func (i *IniParser) GetSlice(sectionKey string) ([]string, error) {
+	keys := strings.Split(sectionKey, ".")
+	value, err := i.c.getValue(keys[0], keys[1], i)
 	if err != nil {
-		return nil, newParserError(err.Error(), section, key, i.errorLine(key))
+		return nil, newParserError(err.Error(), keys[0], keys[1], i.errorLine(keys[1]))
 	}
 
 	return strings.Split(value, ","), nil
