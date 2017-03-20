@@ -15,6 +15,7 @@ type IniParser struct {
 	p    *parser
 	c    *config
 	w    *fsnotify.Watcher
+	fn   func(ev fsnotify.Event)
 	name string
 }
 
@@ -108,11 +109,18 @@ func (i *IniParser) eventFilter(file string) {
 						return
 					}
 				}
+				i.fn(ev)
 			}
 		case err := <-i.w.Errors:
 			log.Println("Watcher error: ", err)
 		}
 	}
+}
+
+// OnConfChange accept a single parameter, a function that gets run right after
+// every event and receive a copy of it.
+func (i *IniParser) OnConfChange(run func(ev fsnotify.Event)) {
+	i.fn = run
 }
 
 // GetBool retrieves a bool value from named section with key name, returns
