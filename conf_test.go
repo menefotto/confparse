@@ -124,14 +124,3 @@ func TestBreakSliceFload(t *testing.T) {
 		t.Fatal("Should be an error!")
 	}
 }
-
-func TestWatcher(t *testing.T) {
-	ini, err := New("sonic.conf")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if err := ini.Watch(); err != nil {
-		t.Fatal(err)
-	}
-}
