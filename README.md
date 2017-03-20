@@ -52,3 +52,7 @@ important of all meaning full error messages.
 #### Disclaimer
 This software in alpha quality, don't use it in a production environment, it's not even
 completed.
+
+#### Notes
+I should thanks the gopheraccademy since I wrote this little lib after I read an article about
+configuration and tokenisers.
