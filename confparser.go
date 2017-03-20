@@ -2,37 +2,46 @@ package confparse
 
 import (
 	"io"
+	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/fsnotify/fsnotify"
 )
 
 type IniParser struct {
-	p *parser
-	c *config
+	p    *parser
+	c    *config
+	w    *fsnotify.Watcher
+	name string
 }
 
-// NewFromFile creates and parse a new configuration from a file name
+// New creates and parse a new configuration from a file name
 // returns a valid parsed object and a nil, or an error and nil object
 // in the successful case the values are ready to be retrieved
-func NewFromFile(confname string) (*IniParser, error) {
+func New(confname string) (*IniParser, error) {
 	f, err := os.Open(confname)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 
-	p := New(f)
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return nil, err
+	}
+
+	p := &IniParser{
+		p:    newParser(f),
+		c:    newConfig(),
+		w:    watcher,
+		name: confname,
+	}
 	p.Parse()
 
 	return p, nil
-}
-
-// New creates a new parser from an io.Reader and returns a valid ini parser
-// note that the object hasn't yet parsed the configuration Parse, has to be
-// explicitly called.
-func New(r io.Reader) *IniParser {
-	return &IniParser{p: newParser(r), c: newConfig()}
 }
 
 // Parse actually parses the object content, note the object is always in a
@@ -53,6 +62,55 @@ func (i *IniParser) Parse() {
 			lastsection = item.Values[0]
 			i.c.C[item.Values[0]] = make(map[string]string, 0)
 
+		}
+	}
+}
+
+// Watch add a file system watcher on the config file itself and reloads the
+// configuration and parses it every time a write event is received.
+func (i *IniParser) Watch() error {
+	defer i.w.Close()
+
+	dir, file := filepath.Split(i.name)
+	if dir == "" {
+		cdir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+		dir = cdir
+	}
+
+	done := make(chan bool)
+
+	go i.eventFilter(file)
+
+	if err := i.w.Add(dir); err != nil {
+		return err
+	}
+
+	<-done
+
+	return nil
+}
+
+func (i *IniParser) eventFilter(file string) {
+	var err error
+
+	for {
+		select {
+		case ev := <-i.w.Events:
+			_, evfile := filepath.Split(ev.Name)
+			if file == evfile {
+				if ev.Op&fsnotify.Write == fsnotify.Write {
+					i, err = New(i.name)
+					if err != nil {
+						log.Println("Fatal: ", err)
+						return
+					}
+				}
+			}
+		case err := <-i.w.Errors:
+			log.Println("Watcher error: ", err)
 		}
 	}
 }

@@ -15,8 +15,7 @@ what is allowed:
   not be considered a key value.
 - The Parser can handle bools, ints and floats (both 64bit), strings and string slices,
   as long as they are divided by columns.
-- Empty line are ignored, white spaces are ignored as well. It hasn't really been
-tested yet, it might have some bugs.
+- Empty lines are ignored, white spaces are ignored as well.
 
 ### How to use it
 Pretty simple, there are only two methods to create a new configuration either call 

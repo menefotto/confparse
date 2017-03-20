@@ -6,14 +6,11 @@ import (
 )
 
 func TestParser(t *testing.T) {
-	f, err := os.Open("sonic.conf")
-	defer f.Close()
+	parser, err := New("sonic.conf")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
-	parser := New(f)
-	parser.Parse()
 	val, err := parser.GetString("repos", "base")
 	if err != nil {
 		t.Log("Error :", err)
@@ -58,12 +55,12 @@ func TestLexer(t *testing.T) {
 }
 
 func TestFileParser(t *testing.T) {
-	_, err := NewFromFile("sonic.conf")
+	_, err := New("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = NewFromFile("nonexistant.conf")
+	_, err = New("nonexistant.conf")
 	if err == nil {
 		t.Fatal(err)
 	}
@@ -71,7 +68,7 @@ func TestFileParser(t *testing.T) {
 }
 
 func TestGetIntBool(t *testing.T) {
-	ini, err := NewFromFile("sonic.conf")
+	ini, err := New("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,7 +92,7 @@ func TestGetIntBool(t *testing.T) {
 }
 
 func TestBreakGetIntBool(t *testing.T) {
-	ini, err := NewFromFile("sonic.conf")
+	ini, err := New("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,7 +110,7 @@ func TestBreakGetIntBool(t *testing.T) {
 }
 
 func TestBreakSliceFload(t *testing.T) {
-	ini, err := NewFromFile("sonic.conf")
+	ini, err := New("sonic.conf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -125,5 +122,16 @@ func TestBreakSliceFload(t *testing.T) {
 	_, err = ini.GetFloat("local", "testbool")
 	if err == nil {
 		t.Fatal("Should be an error!")
+	}
+}
+
+func TestWatcher(t *testing.T) {
+	ini, err := New("sonic.conf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := ini.Watch(); err != nil {
+		t.Fatal(err)
 	}
 }
