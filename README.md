@@ -18,7 +18,7 @@ what is allowed:
 - Empty lines are ignored, white spaces are ignored as well.
 
 ### How to use it
-Pretty simple, there are only two methods to create a new configuration either call 
+Pretty simple, there is only one method to create a new parser just call 
 ```
   ini, err := confparse.New("config-name.whatever")
 ```
@@ -53,6 +53,6 @@ important of all meaning full error messages.
 This software in alpha quality, don't use it in a production environment, it's not even
 completed.
 
-#### Notes
+#### Thank You Notes
 I should thanks the gopheraccademy since I wrote this little lib after I read an article about
 configuration and tokenisers.
