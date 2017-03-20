@@ -37,7 +37,18 @@ occurs. You can call it like so:
 ```
   ini.Watch()
 ```
+If you need to run a function every time an event occurs on the file watched there the:
+```
+ ini.OnConfChange(run func(ev fsnotify.Event))
+```
 And that's pretty much about it.
+
+#### Philosophy
+This software is developed following the "mantra" keep it simple, stupid or better known as
+KISS. Something so simple like configuration files should not required over engineered solutions.
+Though it provides most of the functionality needed by generic configuration files, and most
+important of all meaning full error messages.
+
 #### Disclaimer
 This software in alpha quality, don't use it in a production environment, it's not even
-completed yet and hasn't really been tested.
+completed.
