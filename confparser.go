@@ -202,7 +202,7 @@ func (i *IniParser) GetSlice(sectionKey string) ([]string, error) {
 // GetSection retrieves an entire section coverting the values to the appropriate
 // type is left to the user everything is a string
 func (i *IniParser) GetSection(section string) (map[string]string, error) {
-	return i.c.getSection(section)
+	return i.c.getSection(section, i)
 }
 
 func (i *IniParser) errorLine(word string) int {
@@ -293,12 +293,12 @@ func (c *config) getValue(section, key string, i *IniParser) (string, error) {
 }
 
 func (c *config) getSection(section string, i *IniParser) (map[string]string, error) {
-	section, ok := c.C[section]
+	sectionm, ok := c.C[section]
 	if !ok {
-		return nil, newParserError(SEC_NOT_FOUND.Error(), section, key,
-			i.errorLine(key))
+		return nil, newParserError(SEC_NOT_FOUND.Error(), section, "nokey",
+			i.errorLine(section))
 	}
 
-	return section
+	return sectionm, nil
 
 }
