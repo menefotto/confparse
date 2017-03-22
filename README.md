@@ -30,6 +30,7 @@ values can be retrieved like so:
   value ,err := init.GetSlice("sectionname.valuename")
   value ,err := init.GetString("sectionname.valuename")
   value ,err := init.GetBool("sectionname.valuename")
+  section ,err := init.GetSection("sectionname")
 ```
 There is also a Watch function that listen if any changes are made to the configuration
 file, if it does find some, the configuration get reloaded and parsed every time a change
