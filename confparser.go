@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -184,6 +185,22 @@ func (i *IniParser) GetString(sectionKey string) (string, error) {
 		return "", err
 	}
 	return value, nil
+}
+
+// GetDuration retrieves a time.Duration value from the named section/key, returns either an error and an -1 or a valid duration and a nil error.
+func (i *IniParser) GetDuration(sectionKey string) (time.Duration, error) {
+	keys := strings.Split(sectionKey, ".")
+	value, err := i.c.getValue(keys[0], keys[1], i)
+	if err != nil {
+		return -1, err
+	}
+
+	duration, err := time.ParseDuration(value)
+	if err != nil {
+		return -1, err
+	}
+
+	return duration, nil
 }
 
 // GetSlice retrieves a slice value from named section with key name, returns
